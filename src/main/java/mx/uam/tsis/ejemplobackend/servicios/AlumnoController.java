@@ -60,13 +60,29 @@ public class AlumnoController {
 		
 		
 	}
-	/*
-	public update() {
+	
+	@PutMapping(path = "/alumnos/{matricula}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity <?>update(@RequestBody Alumno nuevoAlumno) {
 		
+		//return ResponseEntity.status( HttpStatus.OK).build();
+        Alumno alumno = alumnoRepository.put(nuevoAlumno.getMatricula(), nuevoAlumno);
+		
+		if(alumno != null) {
+			return ResponseEntity.status(HttpStatus.OK).build();
+		} else {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
 	}
 	
-	public delete() {
-		
-	}*/
+	@DeleteMapping(path = "/alumnos/{matricula}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity <?> delete(@PathVariable("matricula") Integer matricula) {
+		 Alumno alumno= alumnoRepository.remove(matricula);
+		if(alumno !=null) {
+			return ResponseEntity.status(HttpStatus.OK).build();
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+	}
+
  
 }
