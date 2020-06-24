@@ -1,5 +1,64 @@
+<!doctype html>
 <html>
+<head>
+<title>Alumno</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+</head>
 	<body>
-		Hola Spring Boot!
+	<script>
+//pedir informacion de un alumno con su matricula
+function loadDoc(){
+	var matricula=document.getElementById('matricula').value;
+	$(document).ready(function(){
+		console.log("hola" + matricula);
+		$.get("http://localhost:8080/alumnos/"+matricula, cargaAlumno);
+		function cargaAlumno(alumno){
+		     console.log("Encontré lista con elementos  "+ alumno);
+		     $("#contenido").append("El alumno buscado con la matricula es: "+alumno.nombre+"  "+ alumno.carrera);  
+		}
+	 });
+}
+
+//para ingresar informacion 
+ function ingreDoc() {
+	var matricula=document.getElementById('matricula').value;
+	var nombre=document.getElementById('nombre').value;
+	var carrera=document.getElementById('carrera').value;
+	var alumno={ matricula: matricula, nombre: nombre, carrera:carrera};
+		
+		console.log("Encontré lista con elementos :"+ alumno);
+		var jsonAlumno= JSON.stringify(alumno);
+		//$.ajax("http://localhost:8080/alumnos",{"json":jsonAlumno});
+		console.log(jsonAlumno);
+		$(document).ready(function(){
+			$.get("http://localhost:8080/alumnos", {"json":jsonAlumno});
+			
+		});
+	
+	}
+</script>
+	<div class="container"><h2>Registro de Alumno</h2></div>
+	<div class="container-sm p-3 my-3 ">
+	     <form id="formulario">
+	    <label for="matricula"> Matricula:</label><br>
+		  <input type="number" class="form-control" placeholder="numero de matricula" id="matricula" ><br>
+		  <label for="nombre"> Nombre:</label><br>
+		  <input type="text" class="form-control" placeholder="nombre completo"id="nombre" ><br>
+		  <label for="carrera">Carrera:</label><br>
+		  <input type="text" class="form-control" placeholder="carrera" id="carrera" ><br><br>
+		  </form>
+		  <button class="btn btn-success" type="submit" id="Btn" onclick="ingreDoc()">Enviar</button>
+		<button class="btn btn-primary" type="submit" id="myBtn" onclick="loadDoc() ">Recuperar</button>
+		
+      </div>
+      <div  class="container-sm p-3 my-3" > 
+      <div id="contenido" > </div>
+      </div>
 	</body>
 </html>
