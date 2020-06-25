@@ -11,9 +11,10 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 </head>
 	<body>
-	<script>
+
+<script>
 //pedir informacion de un alumno con su matricula
-function loadDoc(){
+function recuperaAlumno(){
 	var matricula=document.getElementById('matricula').value;
 	$(document).ready(function(){
 		console.log("hola" + matricula);
@@ -26,21 +27,32 @@ function loadDoc(){
 }
 
 //para ingresar informacion 
- function ingreDoc() {
-	var matricula=document.getElementById('matricula').value;
-	var nombre=document.getElementById('nombre').value;
-	var carrera=document.getElementById('carrera').value;
-	var alumno={ matricula: matricula, nombre: nombre, carrera:carrera};
-		
-		console.log("Encontré lista con elementos :"+ alumno);
-		var jsonAlumno= JSON.stringify(alumno);
-		//$.ajax("http://localhost:8080/alumnos",{"json":jsonAlumno});
-		console.log(jsonAlumno);
-		$(document).ready(function(){
-			$.get("http://localhost:8080/alumnos", {"json":jsonAlumno});
+ function crearAlumno() {
+	 $.ajaxSetup({contentType:"aplication/json; charset=utf-8"});
+	$.ajax({
+		method:"POST",
+		url:"http://localhost:8080/alumnos/",
+		data: JSON.stringify({matricula: $('#matricula').val(), nombre: $('#nombre').val(), carrera:$('#carrera').val()}),
+		contentType:"APPLICATION/JSON"
+	});
+	
+	}
+
+	function borraAlumno(){
+		$.ajax({
+			method:"DELETE",
+			url:"http://localhost:8080/alumnos/"+$('#matricula').val()
 			
 		});
+	}
 	
+	function actualizarAlumno(){
+		$.ajax({
+			method:"PUT",
+			url:"http://localhost:8080/alumnos/"+$('#matricula').val(),
+			data: JSON.stringify({matricula: $('#matricula').val(), nombre: $('#nombre').val(), carrera:$('#carrera').val()}),
+			contentType:"APPLICATION/JSON"
+		});
 	}
 </script>
 	<div class="container"><h2>Registro de Alumno</h2></div>
@@ -53,8 +65,10 @@ function loadDoc(){
 		  <label for="carrera">Carrera:</label><br>
 		  <input type="text" class="form-control" placeholder="carrera" id="carrera" ><br><br>
 		  </form>
-		  <button class="btn btn-success" type="submit" id="Btn" onclick="ingreDoc()">Enviar</button>
-		<button class="btn btn-primary" type="submit" id="myBtn" onclick="loadDoc() ">Recuperar</button>
+		  <button class="btn btn-success" type="submit" id="Btn" onclick="crearAlumno() ">Enviar</button>
+		<button class="btn btn-primary" type="submit" id="myBtn" onclick="recuperaAlumno() ">Recuperar</button>
+		<button class="btn btn-success" type="submit" id="Btn" onclick="actualizarAlumno() ">Editar</button>
+		<button class="btn btn-primary" type="submit" id="borrar" onclick="borraAlumno() ">Eliminar</button>
 		
       </div>
       <div  class="container-sm p-3 my-3" > 
