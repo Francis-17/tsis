@@ -7,7 +7,13 @@ import org.springframework.stereotype.Service;
 
 import mx.uam.tsis.ejemplobackend.datos.AlumnoRepository;
 import mx.uam.tsis.ejemplobackend.negocio.modelo.Alumno;
-
+import java.util.Optional;
+/**
+ * clase que contiene la logica del negocio del alumno
+ * 
+ * @author fran
+ *
+ */
 @Service
 public class AlumnoService {
 
@@ -15,16 +21,16 @@ public class AlumnoService {
 	private AlumnoRepository alumnoRepository;
 	
 	/**
-	 * 
+	 * Metodo queperomite crear nuevos alumnos 
 	 * @param nuevoAlumno
 	 * @return el alumno que se acaba de crear si la creacion es exitosa, null de lo contrario
 	 */
-	public Alumno create(Alumno nuevoAlumno) {
+public Alumno create(Alumno nuevoAlumno) {
 		
 		// Regla de negocio: No se puede crear más de un alumno con la misma matricula
-		Alumno alumno = alumnoRepository.findByMatricula(nuevoAlumno.getMatricula());
+		Optional <Alumno> alumnoOpt = alumnoRepository.findById(nuevoAlumno.getMatricula());
 		
-		if(alumno == null) {
+		if(!alumnoOpt.isPresent()) {
 			
 			return alumnoRepository.save(nuevoAlumno);
 			
@@ -35,35 +41,43 @@ public class AlumnoService {
 		}
 		
 	}
+
 	
 	/**
 	 * 
 	 * @return
 	 */
+/*
 	public List <Alumno> retrieveAll () {
 		return alumnoRepository.find();
 	}
+	*/
+	public Iterable <Alumno> retrieveAll () {
+		return alumnoRepository.findAll();
+	}
 	
-	public  Alumno retrieve(Integer matricula) {
+	public  Optional <Alumno> retrieve(Integer matricula) {
 		//Alumno alumno = alumnoRepository.findByMatricula(matricula);
-		return alumnoRepository.findByMatricula(matricula);
+		//Optional <Alumno> alumnoOpt = alumnoRepository.findById(matricula);
+		//return alumnoRepository.findByMatricula(matricula);
+		return alumnoRepository.findById(matricula);
 	}
 	
 	public  Alumno update(Integer matricula, Alumno alumnoactualizado) {
-		Alumno alumno = alumnoRepository.findByMatricula(matricula);
-		if(alumno!= null) {
-			alumno.setNombre(alumnoactualizado.getNombre());
-			alumno.setCarrera(alumnoactualizado.getCarrera());
-			return alumnoRepository.update(matricula,alumno);
+		Optional <Alumno>  alumno = alumnoRepository.findById(matricula);
+		if(!alumno.isPresent()) {
+			//alumno.setNombre(alumnoactualizado.getNombre());
+			//alumno.setCarrera(alumnoactualizado.getCarrera());
+			return alumnoRepository.save(alumnoactualizado);
 		}else {
 			return null;
 		}
 	}
 	
 	public boolean delete(Integer matricula) {
-		Alumno alumno = alumnoRepository.findByMatricula(matricula);
+		Optional <Alumno> alumno = alumnoRepository.findById(matricula);
 		if(alumno!=null) {
-			alumnoRepository.delete(matricula);
+			alumnoRepository.deleteById(matricula);
 			return true;
 		}else {
 			return false;

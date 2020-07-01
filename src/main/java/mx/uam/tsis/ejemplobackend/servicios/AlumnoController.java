@@ -4,6 +4,7 @@ package mx.uam.tsis.ejemplobackend.servicios;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import mx.uam.tsis.ejemplobackend.negocio.AlumnoService;
 import mx.uam.tsis.ejemplobackend.negocio.modelo.Alumno;
@@ -26,7 +28,7 @@ import mx.uam.tsis.ejemplobackend.negocio.modelo.Alumno;
 /**
  * Controlador para el API rest
  * 
- * @author humbertocervantes
+ * @author Fran
  *
  */
 @RestController
@@ -37,6 +39,12 @@ public class AlumnoController {
 	//private Map <Integer, Alumno> alumnoRepository = new HashMap <>();
 	@Autowired
 	private AlumnoService alumnoService;
+	
+	@ApiOperation(
+			value = "Crear alumno",
+			notes = "Permite crear un nuevo alumno, la matrícula debe ser única"
+			) // Documentacion del api
+	
 	@PostMapping(path = "/alumnos", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity <?> create(@RequestBody @Valid Alumno nuevoAlumno) {
 		
@@ -51,18 +59,25 @@ public class AlumnoController {
 		}
 	}
 	
+	@ApiOperation(
+			value = "Recupera  alumnos",
+			notes = "Permite recuperar la lista de los alumnos registrados"
+			) // Documentacion del api
 	@GetMapping(path = "/alumnos", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity <?> retrieveAll() {
-		List <Alumno> result = alumnoService.retrieveAll();
+		Iterable <Alumno> result = alumnoService.retrieveAll();
 		
 		return ResponseEntity.status(HttpStatus.OK).body(result); 
 		
 	}
 	
-
+	@ApiOperation(
+			value = "recupera  alumno",
+			notes = "Permite recuperar un alumno por su matricula, la matrícula debe se existir"
+			) // Documentacion del api
 	@GetMapping(path = "/alumnos/{matricula}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity <?> retrieve(@PathVariable("matricula") Integer matricula) {
-		Alumno alumno = alumnoService.retrieve(matricula);
+		Optional <Alumno> alumno = alumnoService.retrieve(matricula);
 		if(alumno != null) {
 			return  ResponseEntity.status(HttpStatus.OK).body(alumno);
 		} else {
@@ -72,7 +87,10 @@ public class AlumnoController {
 		
 	}
 	
-
+	@ApiOperation(
+			value = "Edita alumno",
+			notes = "Permite editar un alumno partiendo de su matricula, la matrícula debe de existir"
+			) // Documentacion del api
 	@PutMapping(path = "/alumnos/{matricula}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity <?>update(@PathVariable("matricula") Integer matricula,@RequestBody  @Valid Alumno alumnoActualizado) {
 		
@@ -85,6 +103,10 @@ public class AlumnoController {
 		}
 	}
 	
+	@ApiOperation(
+			value = "Elimina alumno",
+			notes = "Permite eliminar un alumno apatir de su matricula, la matrícula debe de existir"
+			) // Documentacion del api
 	@DeleteMapping(path = "/alumnos/{matricula}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity <?> delete(@PathVariable("matricula") Integer matricula) {
 		 //Alumno alumno= alumnoRepository.remove(matricula);
