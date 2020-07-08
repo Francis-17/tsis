@@ -84,4 +84,12 @@ public Alumno create(Alumno nuevoAlumno) {
 		}
 		 
 	}
+	public Alumno findByMatricula(Integer matricula) {
+
+		// Lógica de negocio
+		
+		Optional <Alumno> alumnoOpt = alumnoRepository.findById(matricula);
+		
+		return alumnoOpt.get();
+	}
 }
